@@ -1,0 +1,36 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The INTERNET permission is required for development. Specifically,
+         the Flutter tool needs it to communicate with the running application
+         to allow setting breakpoints, to provide hot reload, etc.
+    -->
+        <!-- Required for ambient mode support -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Flags the app as a Wear app -->
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature
+        android:name="android.hardware.sensor.stepcounter"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.stepdetector"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.heartrate"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.heartrate.ecg"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />  
+
+    <!-- Flags that the app doesn't require a companion phone app -->
+    <application>
+    <meta-data
+        android:name="com.google.android.wearable.standalone"
+        android:value="true" />
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>
