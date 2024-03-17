@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(HealthApp());
 
@@ -43,7 +44,7 @@ class _HealthAppState extends State<HealthApp> {
      HealthDataType.WORKOUT,
      HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
      HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
-      //Uncomment this line on iOS - only available on iOS
+     // Uncomment this line on iOS - only available on iOS
      // HealthDataType.AUDIOGRAM
    ];
 
@@ -64,7 +65,8 @@ class _HealthAppState extends State<HealthApp> {
     // This requires a special request authorization call.
     //
     // The location permission is requested for Workouts using the Distance information.
-    
+    await Permission.activityRecognition.request();
+    await Permission.location.request();
 
     // Check if we have health permissions
     bool? hasPermissions =
