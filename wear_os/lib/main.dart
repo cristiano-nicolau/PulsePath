@@ -179,75 +179,85 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   }
 
   Widget _workoutTile(double size) {
-  double iconSize = size * 0.08;
-  double textSize = size * 0.05;
-  double spacing = size * 0.01;
+    double iconSize = size * 0.08;
+    double textSize = size * 0.05;
+    double spacing = size * 0.01;
 
-  return Container(
-    width: size,
-    height: size,
-    padding: EdgeInsets.all(size * 0.05),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Colors.grey[800]!, Colors.grey[700]!],
-      ),
-      shape: BoxShape.circle,
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black45,
-          spreadRadius: 1,
-          blurRadius: 3,
-          offset: Offset(1, 3),
+    return Container(
+      width: size,
+      height: size,
+      padding: EdgeInsets.all(size * 0.05),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.grey[800]!, Colors.grey[700]!],
         ),
-      ],
-    ),
-    child: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.fitness_center, size: size * 0.2, color: Colors.green),
-          SizedBox(height: spacing),
-          Text('Workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: size * 0.1)),
-          SizedBox(height: spacing),
-          // Use a Flexible widget to handle the layout of the GridView
-          Flexible(
-            child: GridView.count(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
-              crossAxisCount: 2,
-              mainAxisSpacing: spacing,
-              crossAxisSpacing: spacing,
-              childAspectRatio: 1.5,
-              children: [
-                _iconDetail(Icons.local_fire_department, '${calories.toStringAsFixed(2)} kcal', iconSize, textSize),
-                _iconDetail(Icons.directions_walk, '$steps', iconSize, textSize),
-                _iconDetail(Icons.flag, '${distance.toStringAsFixed(2)} m', iconSize, textSize),
-                _iconDetail(Icons.speed, '${speed.toStringAsFixed(2)} m/s', iconSize, textSize),
-              ],
-            ),
+        shape: BoxShape.circle,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black45,
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(1, 3),
           ),
         ],
       ),
-    ),
-  );
-}
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.fitness_center, size: size * 0.2, color: Colors.green),
+            SizedBox(height: spacing),
+            Text('Workout',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                    fontSize: size * 0.1)),
+            SizedBox(height: spacing),
+            // Use a Flexible widget to handle the layout of the GridView
+            Flexible(
+              child: GridView.count(
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
+                crossAxisCount: 2,
+                mainAxisSpacing: spacing,
+                crossAxisSpacing: spacing,
+                childAspectRatio: 1.5,
+                children: [
+                  _iconDetail(
+                      Icons.local_fire_department,
+                      '${calories.toStringAsFixed(2)} kcal',
+                      iconSize,
+                      textSize),
+                  _iconDetail(
+                      Icons.directions_walk, '$steps', iconSize, textSize),
+                  _iconDetail(Icons.flag, '${distance.toStringAsFixed(2)} m',
+                      iconSize, textSize),
+                  _iconDetail(Icons.speed, '${speed.toStringAsFixed(2)} m/s',
+                      iconSize, textSize),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-
-
-Widget _iconDetail(IconData icon, String value, double iconSize, double textSize) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Icon(icon, size: iconSize, color: Colors.white),
-      SizedBox(height: iconSize * 0.25), // Adjust spacing between icon and text
-      Text(value, style: TextStyle(fontSize: textSize, color: Colors.white)),
-    ],
-  );
-}
-
-
+  Widget _iconDetail(
+      IconData icon, String value, double iconSize, double textSize) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: iconSize, color: Colors.white),
+        SizedBox(
+            height: iconSize * 0.25), // Adjust spacing between icon and text
+        Text(value, style: TextStyle(fontSize: textSize, color: Colors.white)),
+      ],
+    );
+  }
 
   Widget _statTile(
       String title, String value, IconData icon, Color color, double size) {
