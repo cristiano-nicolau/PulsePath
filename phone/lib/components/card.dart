@@ -27,7 +27,7 @@ class CustomCard extends StatelessWidget {
         color: color.withOpacity(0.1), // Defina a opacidade da cor de fundo do card
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -37,7 +37,7 @@ class CustomCard extends StatelessWidget {
                 SizedBox(width: 8),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
                 ),
               ],
             ),
