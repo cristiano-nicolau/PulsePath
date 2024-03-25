@@ -64,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       await storage.write(key: 'token', value: result['token']);
       await storage.write(key: 'id', value: result['id'].toString());
+      await storage.write(key: 'name', value: result['name']);
 
       await Future.delayed(Duration(seconds: 1));
 

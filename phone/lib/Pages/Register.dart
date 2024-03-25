@@ -84,6 +84,7 @@ _performRegistration() async {
       // Salve o token de autenticação no armazenamento seguro
       await storage.write(key: 'token', value: result['token']);
       await storage.write(key: 'id', value: result['id'].toString());
+      await storage.write(key: 'name', value: result['name']);
 
 
       // Aguarde 1 segundo para que o usuário possa ver a mensagem de sucesso

@@ -108,6 +108,7 @@ Future<Map<String, dynamic>?> insertUserData(UserData data) async {
     // Retorne os dados do usuário e o token
     return {
       'token': token,
+      'name': data.name,
       'id': id,
     };
   } catch (e) {
@@ -140,6 +141,7 @@ Future<Map<String, dynamic>?> insertUserData(UserData data) async {
       return {
         'token': token,
         'id': result[0]['id'] as int?,
+        'name': result[0]['name'] as String,
       };
     } else {
       return null;
