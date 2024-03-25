@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:workout/workout.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather/weather.dart';
 import 'WaterIntakePage.dart';
+import 'WorkoutDetailsPage.dart';
 
 void main() => runApp(const MyApp());
 
@@ -44,14 +47,45 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   double steps = 0;
   double distance = 0;
   double speed = 0;
-  int waterIntake = 0; // Added for water intake tracking
+  int waterIntake = 0;
+  late WeatherFactory wf;
+  Weather? currentWeather;
 
   @override
   void initState() {
     super.initState();
     initializeMqttClient();
     startWorkoutListener();
-    // Start automatically
+    wf = WeatherFactory("d6df89e388607f46bc0a46185094466b",
+        language: Language.PORTUGUESE);
+    fetchWeather();
+  }
+
+  // Fetch weather data
+  Future<void> fetchWeather() async {
+    try {
+      // Check for location permission
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // Handle permission denied cases
+        print("Location permission denied");
+        return;
+      }
+
+      // Get the current position
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // Use the position to fetch weather
+      Weather w = await wf.currentWeatherByLocation(
+          position.latitude, position.longitude);
+      setState(() {
+        currentWeather = w;
+      });
+    } catch (e) {
+      print("Failed to fetch weather data: $e");
+    }
   }
 
   Future<void> initializeMqttClient() async {
@@ -67,7 +101,8 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   }
 
   void startWorkoutListener() {
-    workout.start(
+    workout
+        .start(
       exerciseType: ExerciseType.walking,
       features: [
         WorkoutFeature.heartRate,
@@ -77,11 +112,13 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
         WorkoutFeature.speed,
       ],
       enableGps: true,
-    ).then((result) {
+    )
+        .then((result) {
       if (result.unsupportedFeatures.isNotEmpty) {
         print('Unsupported features: ${result.unsupportedFeatures}');
       } else {
-        print('Workout started successfully with all requested features supported');
+        print(
+            'Workout started successfully with all requested features supported');
         workout.stream.listen((event) {
           print('Received workout update: $event');
           setState(() {
@@ -112,7 +149,6 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
     });
   }
 
-
   void publishSensorData() {
     final sensorData =
         'Heart Rate: $heartRate, Calories: $calories, Steps: $steps, Distance: $distance, Speed: $speed';
@@ -129,12 +165,43 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
         crossAxisCount: 2,
         children: [
           _statTile('Heart Rate', '$heartRate bpm', Icons.favorite, Colors.red),
-          _statTile('Calories', '${calories.toStringAsFixed(2)} kcal', Icons.local_fire_department, Colors.orange),
-          _statTile('Steps', '$steps steps', Icons.directions_walk, Colors.blue),
+          _statTile(
+              'Weather',
+              currentWeather != null
+                  ? "${currentWeather!.weatherDescription}, ${currentWeather!.temperature!.celsius!.toStringAsFixed(1)}°C"
+                  : "Loading...",
+              Icons.wb_sunny,
+              Colors.orange),
           _waterIntakeTile(),
-          _statTile('Distance', '${distance.toStringAsFixed(2)} m', Icons.map, Colors.purple),
-          _statTile('Speed', '${speed.toStringAsFixed(2)} m/s', Icons.speed, Colors.green),
+          _workoutNavigatorTile(context),
         ],
+      ),
+    );
+  }
+
+  Widget _workoutNavigatorTile(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WorkoutDetailsPage(
+                  calories: calories,
+                  steps: steps,
+                  distance: distance,
+                  speed: speed))),
+      child: Card(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.fitness_center, size: 40, color: Colors.green),
+              SizedBox(height: 8),
+              Text('Workout',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.green)),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -147,7 +214,8 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
           children: [
             Icon(icon, size: 40, color: color),
             SizedBox(height: 8),
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: color)),
+            Text(title,
+                style: TextStyle(fontWeight: FontWeight.bold, color: color)),
             Text(value, style: TextStyle(fontSize: 18)),
           ],
         ),
@@ -156,26 +224,32 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   }
 
   Widget _waterIntakeTile() {
-  return GestureDetector(
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WaterIntakePage(initialWaterIntake: waterIntake, onWaterIntakeUpdated: (int updatedValue) {
-      setState(() {
-        waterIntake = updatedValue;
-      });
-    }))),
-    child: Card(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.local_drink, size: 40, color: Colors.blue),
-            SizedBox(height: 8),
-            Text('Water', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
-            Text('$waterIntake', style: TextStyle(fontSize: 18)),
-          ],
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WaterIntakePage(
+                  initialWaterIntake: waterIntake,
+                  onWaterIntakeUpdated: (int updatedValue) {
+                    setState(() {
+                      waterIntake = updatedValue;
+                    });
+                  }))),
+      child: Card(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.local_drink, size: 40, color: Colors.blue),
+              SizedBox(height: 8),
+              Text('Water',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.blue)),
+              Text('$waterIntake', style: TextStyle(fontSize: 18)),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
