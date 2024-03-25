@@ -5,7 +5,6 @@ import 'package:workout/workout.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:weather/weather.dart';
-import 'WorkoutDetailsPage.dart';
 
 void main() => runApp(const MyApp());
 
