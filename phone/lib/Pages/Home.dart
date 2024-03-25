@@ -30,8 +30,10 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 String? token = await storage.read(key: 'token');
+                String? name = await storage.read(key: 'name');
                 if (token != null) {
                   print("Token encontrado");
+                  print(name);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SensorDataPage()),
