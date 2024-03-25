@@ -8,7 +8,7 @@ import '../components/password_field.dart';
 import '../components/register_button.dart';
 import '../components/name_field.dart';
 import '../components/phone_field.dart';
-import 'sensor_data_page.dart';
+import 'InitialPage.dart';
 import 'Login.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -93,7 +93,7 @@ _performRegistration() async {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SensorDataPage()),
+        MaterialPageRoute(builder: (context) => InitialPage()),
       );
     } else {
       // Caso contrário, exiba uma mensagem de erro

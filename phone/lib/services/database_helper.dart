@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import '../models/sensor_data_model.dart';
 import '../models/users.dart';
+import '../models/UsersInfo.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -48,6 +49,17 @@ class DatabaseHelper {
       password $textType
     )
   ''');
+
+  // Cria a tabela usersInfo se ela ainda não existir
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS usersInfo (
+      id $idType,
+      userId $idType,
+      weight $textType,
+      height $textType,
+      age $textType,
+      gender $textType,
+      )''');
   }
 
   Future<int> insertSensorData(SensorData data) async {
@@ -164,6 +176,15 @@ Future<Map<String, dynamic>?> insertUserData(UserData data) async {
     return token;
 
   }
+
+ //insere info do user na base dados
+  Future<int> insertUsersInfo(UserInfo data) async {
+    final db = await instance.database;
+    final id = await db.insert('usersInfo', data.toMap());
+    print('InsertUsersInfo: Inserido com sucesso | ID: $id, Weight: ${data.weight}, Height: ${data.height}, Age: ${data.age}, gender: ${data.gender}');
+    return id;
+  }
+
 
   Future close() async {
     final db = await instance.database;
