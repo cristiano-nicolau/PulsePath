@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:phone/Pages/sensor_data_page.dart';
 import 'package:phone/components/GenderCard.dart';
-import 'package:phone/models/UsersInfo.dart';
+import 'package:phone/models/userinfo.dart';
 import 'package:phone/services/database_helper.dart';
 
 

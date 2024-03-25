@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import '../models/sensor_data_model.dart';
 import '../models/users.dart';
-import '../models/UsersInfo.dart';
+import '../models/userinfo.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -19,47 +19,58 @@ class DatabaseHelper {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
+    print("Database initialized at $path");
+
+    //await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const id = 'INTEGER NOT NULL';
     const textType = 'TEXT NOT NULL';
 
- await db.execute('''
-    CREATE TABLE IF NOT EXISTS sensorData (
-      id $idType,
-      userId $idType,
-      heartRate $textType,
-      calories $textType,
-      steps $textType,
-      distance $textType,
-      speed $textType
-    )
-  ''');
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS sensorData (
+          id $idType,
+          userId $id,
+          heartRate $textType,
+          calories $textType,
+          steps $textType,
+          distance $textType,
+          speed $textType
+        )
+      ''');
 
-  // Cria a tabela users se ela ainda não existir
-  await db.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-      id $idType,
-      name $textType,
-      email $textType UNIQUE,
-      phone $textType,
-      password $textType
-    )
-  ''');
+      print('DatabaseHelper: Tabela sensorData criada com sucesso');
 
-  // Cria a tabela usersInfo se ela ainda não existir
-  await db.execute('''
-    CREATE TABLE IF NOT EXISTS usersInfo (
-      id $idType,
-      userId $idType,
-      weight $textType,
-      height $textType,
-      age $textType,
-      gender $textType,
-      )''');
+      // Cria a tabela users se ela ainda não existir
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+          id $idType,
+          name $textType,
+          email $textType UNIQUE,
+          phone $textType,
+          password $textType
+        )
+      ''');
+
+      print('DatabaseHelper: Tabela users criada com sucesso');
+      // Cria a tabela usersInfo se ela ainda não existir
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS info (
+          id $idType,
+          userId $id,
+          weight $textType,
+          height $textType,
+          age $textType,
+          gender $textType
+          )
+        ''');
+
+        print('DatabaseHelper: Tabela info criada com sucesso');
+        print('DatabaseHelper: Tabelas criadas com sucesso');
   }
 
   Future<int> insertSensorData(SensorData data) async {
@@ -180,7 +191,7 @@ Future<Map<String, dynamic>?> insertUserData(UserData data) async {
  //insere info do user na base dados
   Future<int> insertUsersInfo(UserInfo data) async {
     final db = await instance.database;
-    final id = await db.insert('usersInfo', data.toMap());
+    final id = await db.insert('info', data.toMap());
     print('InsertUsersInfo: Inserido com sucesso | ID: $id, Weight: ${data.weight}, Height: ${data.height}, Age: ${data.age}, gender: ${data.gender}');
     return id;
   }

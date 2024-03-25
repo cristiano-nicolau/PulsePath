@@ -3,11 +3,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../Pages/Home.dart';
 import '/services/mqtt_service.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final mqttService = MqttService();
   await mqttService.initializeMqttClient();
   final storage = FlutterSecureStorage();
+
   runApp(MyApp());
 }
 
