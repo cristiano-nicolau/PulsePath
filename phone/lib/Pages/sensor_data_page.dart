@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:phone/Pages/Login.dart';
 import 'package:phone/components/card.dart';
+import 'package:phone/services/mqtt_service.dart';
 import 'package:phone/styles/colors.dart';
 import '../services/database_helper.dart';
 import '../../models/sensor_data_model.dart';
@@ -16,10 +17,18 @@ class SensorDataPage extends StatefulWidget {
 enum NavBarItem { Profile, Home, Logout }
 
 class _SensorDataPageState extends State<SensorDataPage> {
-  Future<List<SensorData>> _sensorData = DatabaseHelper.instance.fetchSensorData();
+  Future<List<SensorData>> _sensorData =
+      DatabaseHelper.instance.fetchSensorData();
   NavBarItem _selectedItem = NavBarItem.Home; // Item inicialmente selecionado
 
   final storage = const FlutterSecureStorage();
+  // Dynamic data properties
+  String heartRate = "0";
+  String steps = "0";
+  String distance = "0";
+  String calories = "0";
+  String water = "0";
+  String speed = "0";
   String name = '';
   String lastUpdate = '';
 
@@ -28,6 +37,23 @@ class _SensorDataPageState extends State<SensorDataPage> {
     super.initState();
     storage.write(key: 'lastUpdate', value: DateTime.now().toString());
     _getNameFromStorage();
+     MqttService().dataUpdates.listen((_) => _fetchSensorData());
+  }
+
+  void _fetchSensorData() async {
+    // Fetch the latest sensor data from the database and update the state
+    final sensorDataList = await DatabaseHelper.instance.fetchSensorData();
+    if (sensorDataList.isNotEmpty) {
+      final latestData = sensorDataList.last;
+      setState(() {
+        heartRate = latestData.heartRate;
+        steps = latestData.steps;
+        distance = latestData.distance;
+        calories = latestData.calories;
+        water = "Dynamically update this"; // Example, adjust accordingly
+        speed = latestData.speed;
+      });
+    }
   }
 
   String _calculateTimeDifference(String storedTime) {
@@ -57,44 +83,44 @@ class _SensorDataPageState extends State<SensorDataPage> {
 
     String storedLastUpdate = (await storage.read(key: 'lastUpdate'))!;
     lastUpdate = _calculateTimeDifference(storedLastUpdate);
-    setState(() {}); 
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-bottomNavigationBar: Container(
-  height: 60,
-  padding: const EdgeInsets.all(12),
-  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-  decoration: BoxDecoration(
-    color: blueColor.withOpacity(0.8),
-    borderRadius: const BorderRadius.all(Radius.circular(24)),
-    boxShadow: [
-      BoxShadow(
-        color: blueColor.withOpacity(0.3),
-        offset: const Offset(0, 20),
-        blurRadius: 20,
+      bottomNavigationBar: Container(
+        height: 60,
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: blueColor.withOpacity(0.8),
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
+          boxShadow: [
+            BoxShadow(
+              color: blueColor.withOpacity(0.3),
+              offset: const Offset(0, 20),
+              blurRadius: 20,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            buildNavBarItem(NavBarItem.Profile, Icons.person_rounded),
+            buildNavBarItem(NavBarItem.Home, Icons.home_rounded),
+            buildNavBarItem(NavBarItem.Logout, Icons.logout),
+          ],
+        ),
       ),
-    ],
-  ),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      buildNavBarItem(NavBarItem.Profile, Icons.person_rounded),
-      buildNavBarItem(NavBarItem.Home, Icons.home_rounded),
-      buildNavBarItem(NavBarItem.Logout, Icons.logout),
-    ],
-  ),
-),
       body: Column(
         children: [
           const SizedBox(height: 75),
           Container(
             padding: const EdgeInsets.only(left: 35),
-            child: Align(
+            child: const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'Hello,',
                 style: TextStyle(fontSize: 30),
               ),
@@ -127,15 +153,15 @@ bottomNavigationBar: Container(
                       height: 35,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFFFBDC8E),
+                        color: const Color(0xFFFBDC8E),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.info,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(width: 5),
-                    Expanded(
+                    const SizedBox(width: 5),
+                    const Expanded(
                       child: Text(
                         'You have not checked out the app recently. \nDo some work to get back on track!',
                         style: TextStyle(fontSize: 15),
@@ -167,11 +193,11 @@ bottomNavigationBar: Container(
                             builder: (context) => const SensorDataPage()),
                       );
                     },
-                    child:
-                        const Icon(Icons.refresh_rounded, color: Colors.white),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueGrey,
                     ),
+                    child:
+                        const Icon(Icons.refresh_rounded, color: Colors.white),
                   ),
                 ],
               ),
@@ -180,68 +206,67 @@ bottomNavigationBar: Container(
           const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               CustomCard(
                 title: 'Heart Rate',
                 icon: Icons.favorite,
-                color: Color(0xFFD2416E),
-                subtitle: '25',
+                color: const Color(0xFFD2416E),
+                subtitle: heartRate,
                 unit: 'bpm',
               ),
               CustomCard(
                 title: 'Steps',
                 icon: Icons.directions_walk_rounded,
-                color: Color(0xFF7042C9),
-                subtitle: '25',
+                color: const Color(0xFF7042C9),
+                subtitle: steps,
                 unit: 'steps',
               ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               CustomCard(
                 title: 'Distance',
                 icon: Icons.flag,
-                color: Color(0xFF0DB1AD),
-                subtitle: '25',
+                color: const Color(0xFF0DB1AD),
+                subtitle: distance,
                 unit: 'km',
               ),
               CustomCard(
                 title: 'Calories',
                 icon: Icons.local_fire_department_rounded,
-                color: Color(0xFF197BD2),
-                subtitle: '25',
+                color: const Color(0xFF197BD2),
+                subtitle: calories,
                 unit: 'kcal',
               ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               CustomCard(
                 title: 'Water',
                 icon: Icons.water_damage_rounded,
-                color: Color(0xFFEDC152),
-                subtitle: '5',
-                unit: 'cups',
+                color: const Color(0xFFEDC152),
+                subtitle: water,
+                unit: 'glasses',
               ),
               CustomCard(
                 title: 'Speed',
                 icon: Icons.speed_rounded,
-                color: Color.fromARGB(255, 241, 83, 35),
-                subtitle: '25',
+                color: const Color.fromARGB(255, 241, 83, 35),
+                subtitle: speed,
                 unit: 'km/h',
               ),
             ],
           ),
         ],
       ),
-      
     );
-    
   }
- Widget buildNavBarItem(NavBarItem item, IconData icon) {
+
+  Widget buildNavBarItem(NavBarItem item, IconData icon) {
     bool isSelected = _selectedItem == item;
     return GestureDetector(
       onTap: () {
@@ -274,13 +299,13 @@ bottomNavigationBar: Container(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             "Logout",
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Are you sure you want to log out?"),
+          content: const Text("Are you sure you want to log out?"),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -292,14 +317,14 @@ bottomNavigationBar: Container(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),
-                  child: Text(
+                  child: const Text(
                     "No",
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 TextButton(
                   onPressed: () {
                     // Executar logout
@@ -307,13 +332,13 @@ bottomNavigationBar: Container(
                     // Por exemplo, navegar para a tela de login
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),
-                  child: Text(
+                  child: const Text(
                     "Yes",
                     style: TextStyle(
                       color: Colors.white,
@@ -327,5 +352,4 @@ bottomNavigationBar: Container(
       },
     );
   }
-  
-  }
+}

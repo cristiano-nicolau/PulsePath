@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'database_helper.dart';
@@ -6,6 +8,10 @@ import '../models/sensor_data_model.dart';
 class MqttService {
   late MqttServerClient client;
   final dbHelper = DatabaseHelper.instance;
+  final StreamController<bool> _dataUpdateController = StreamController.broadcast();
+
+  Stream<bool> get dataUpdates => _dataUpdateController.stream;
+
 
   Future<void> initializeMqttClient() async {
     client = MqttServerClient('broker.emqx.io', 'flutter_client_android');
@@ -56,6 +62,8 @@ class MqttService {
     dbHelper.insertSensorData(sensorData).then((id) {
       print('Sensor data inserted with id: $id');
     });
+
+    _dataUpdateController.add(true);
   }
 
   void onConnected() {
