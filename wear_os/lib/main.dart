@@ -152,7 +152,6 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
     final pageWidth = screenSize.width;
 
     // Calculate the size of the content to ensure it's visible in a round display
-    // This is a basic approach; you might need to adjust it based on your actual content
     final contentSize = min(pageWidth, pageHeight);
 
     return Scaffold(
@@ -174,57 +173,82 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
                   Colors.orange,
                   contentSize)),
           Center(child: _waterIntakeTile(contentSize * 0.95)),
-          Center(child: _workoutNavigatorTile(context, contentSize)),
+          Center(child: _workoutTile(contentSize)),
         ],
       ),
     );
   }
 
-  Widget _workoutNavigatorTile(BuildContext context, double size) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => WorkoutDetailsPage(
-                  calories: calories,
-                  steps: steps,
-                  distance: distance,
-                  speed: speed))),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black,
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            )
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.fitness_center, size: size * 0.3, color: Colors.green),
-              SizedBox(height: size * 0.05),
-              Text(
-                'Workout',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                  fontSize: size * 0.1,
-                ),
-              ),
-            ],
-          ),
-        ),
+  Widget _workoutTile(double size) {
+  double iconSize = size * 0.08;
+  double textSize = size * 0.05;
+  double spacing = size * 0.01;
+
+  return Container(
+    width: size,
+    height: size,
+    padding: EdgeInsets.all(size * 0.05),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.grey[800]!, Colors.grey[700]!],
       ),
-    );
-  }
+      shape: BoxShape.circle,
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black45,
+          spreadRadius: 1,
+          blurRadius: 3,
+          offset: Offset(1, 3),
+        ),
+      ],
+    ),
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.fitness_center, size: size * 0.2, color: Colors.green),
+          SizedBox(height: spacing),
+          Text('Workout', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: size * 0.1)),
+          SizedBox(height: spacing),
+          // Use a Flexible widget to handle the layout of the GridView
+          Flexible(
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
+              crossAxisCount: 2,
+              mainAxisSpacing: spacing,
+              crossAxisSpacing: spacing,
+              childAspectRatio: 1.5,
+              children: [
+                _iconDetail(Icons.local_fire_department, '${calories.toStringAsFixed(2)} kcal', iconSize, textSize),
+                _iconDetail(Icons.directions_walk, '$steps', iconSize, textSize),
+                _iconDetail(Icons.flag, '${distance.toStringAsFixed(2)} m', iconSize, textSize),
+                _iconDetail(Icons.speed, '${speed.toStringAsFixed(2)} m/s', iconSize, textSize),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+
+Widget _iconDetail(IconData icon, String value, double iconSize, double textSize) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: iconSize, color: Colors.white),
+      SizedBox(height: iconSize * 0.25), // Adjust spacing between icon and text
+      Text(value, style: TextStyle(fontSize: textSize, color: Colors.white)),
+    ],
+  );
+}
+
+
 
   Widget _statTile(
       String title, String value, IconData icon, Color color, double size) {
@@ -234,7 +258,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
       decoration: BoxDecoration(
         color: Colors.grey[800],
         shape: BoxShape.circle,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black,
             spreadRadius: 2,
@@ -287,7 +311,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
               strokeWidth: 10, // Width of the progress indicator
               backgroundColor:
                   Colors.grey, // Background color of the progress bar
-              valueColor: AlwaysStoppedAnimation<Color>(
+              valueColor: const AlwaysStoppedAnimation<Color>(
                   Colors.blue), // Color of the progress bar
             ),
           ),
@@ -296,7 +320,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
             decoration: BoxDecoration(
               color: Colors.grey[800],
               shape: BoxShape.circle,
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black,
                   spreadRadius: 2,
@@ -329,7 +353,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.remove, color: Colors.white),
+                        icon: const Icon(Icons.remove, color: Colors.white),
                         onPressed: () {
                           setState(() {
                             if (waterIntake > 0) {
@@ -339,7 +363,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.add, color: Colors.white),
+                        icon: const Icon(Icons.add, color: Colors.white),
                         onPressed: () {
                           setState(() {
                             waterIntake++;
