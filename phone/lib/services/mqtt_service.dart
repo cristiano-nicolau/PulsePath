@@ -1,6 +1,6 @@
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import '../database_helper.dart';
+import 'database_helper.dart';
 import '../models/sensor_data_model.dart';
 
 class MqttService {
@@ -42,8 +42,10 @@ class MqttService {
     final steps = parts[2].split(': ')[1];
     final distance = parts[3].split(': ')[1];
     final speed = parts[4].split(': ')[1];
+    final userId = parts[5].split(': ')[1];
 
     final sensorData = SensorData(
+      userId: int.parse(userId),
       heartRate: heartRate,
       calories: calories,
       steps: steps,
