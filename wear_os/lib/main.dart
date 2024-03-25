@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:workout/workout.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:weather/weather.dart';
 import 'WaterIntakePage.dart';
 import 'WorkoutDetailsPage.dart';
@@ -64,22 +63,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   // Fetch weather data
   Future<void> fetchWeather() async {
     try {
-      // Check for location permission
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        // Handle permission denied cases
-        print("Location permission denied");
-        return;
-      }
-
-      // Get the current position
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      // Use the position to fetch weather
-      Weather w = await wf.currentWeatherByLocation(
-          position.latitude, position.longitude);
+      Weather w = await wf.currentWeatherByCityName("Aveiro, PT");
       setState(() {
         currentWeather = w;
       });
@@ -194,8 +178,8 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.fitness_center, size: 40, color: Colors.green),
-              SizedBox(height: 8),
+              Icon(Icons.fitness_center, size: 20, color: Colors.green),
+              SizedBox(height: 6),
               Text('Workout',
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.green)),
@@ -212,11 +196,11 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: color),
-            SizedBox(height: 8),
+            Icon(icon, size: 20, color: color),
+            SizedBox(height: 6),
             Text(title,
                 style: TextStyle(fontWeight: FontWeight.bold, color: color)),
-            Text(value, style: TextStyle(fontSize: 18)),
+            Text(value, style: TextStyle(fontSize: 12)),
           ],
         ),
       ),
@@ -240,8 +224,8 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.local_drink, size: 40, color: Colors.blue),
-              SizedBox(height: 8),
+              Icon(Icons.local_drink, size: 20, color: Colors.blue),
+              SizedBox(height: 6),
               Text('Water',
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.blue)),
