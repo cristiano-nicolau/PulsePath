@@ -36,23 +36,24 @@ class _SensorDataPageState extends State<SensorDataPage> {
     super.initState();
     storage.write(key: 'lastUpdate', value: DateTime.now().toString());
     _getNameFromStorage();
-     MqttService().dataUpdates.listen((_) => _fetchSensorData());
+    _listenToMqttUpdates();
   }
 
-  void _fetchSensorData() async {
-    // Fetch the latest sensor data from the database and update the state
-    final sensorDataList = await DatabaseHelper.instance.fetchSensorData();
-    if (sensorDataList.isNotEmpty) {
-      final latestData = sensorDataList.last;
+  void _listenToMqttUpdates() {
+    // Initialize the MQTT client and listen for incoming data
+    final mqttService = MqttService();
+    mqttService.initializeMqttClient();
+    mqttService.dataUpdates.listen((sensorData) {
+      // Directly update the UI with incoming sensor data
       setState(() {
-        heartRate = latestData.heartRate;
-        steps = latestData.steps;
-        distance = latestData.distance;
-        calories = latestData.calories;
-        water = "Dynamically update this"; // Example, adjust accordingly
-        speed = latestData.speed;
+        heartRate = sensorData.heartRate;
+        steps = sensorData.steps;
+        distance = sensorData.distance;
+        calories = sensorData.calories;
+        water = sensorData.water;
+        speed = sensorData.speed;
       });
-    }
+    });
   }
 
   String _calculateTimeDifference(String storedTime) {

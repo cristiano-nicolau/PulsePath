@@ -34,13 +34,14 @@ class DatabaseHelper {
  await db.execute('''
     CREATE TABLE IF NOT EXISTS sensorData (
       id $idType,
-      userId $idType,
+      userId $id,
       heartRate $textType,
       calories $textType,
       steps $textType,
       distance $textType,
       speed $textType,
-      water $textType
+      water $textType,
+      receivedDate $textType
     )
   ''');
 
@@ -94,6 +95,7 @@ class DatabaseHelper {
       distance: json['distance'] as String,
       speed: json['speed'] as String,
       water: json['water'] as String,
+      receivedDate: DateTime.parse(json['receivedDate'] as String),
     )).toList();
   }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'database_helper.dart';
@@ -8,10 +9,19 @@ import '../models/sensor_data_model.dart';
 class MqttService {
   late MqttServerClient client;
   final dbHelper = DatabaseHelper.instance;
-  final StreamController<bool> _dataUpdateController = StreamController.broadcast();
+  final StreamController<SensorData> _dataUpdateController = StreamController<SensorData>.broadcast();
 
-  Stream<bool> get dataUpdates => _dataUpdateController.stream;
+  Stream<SensorData> get dataUpdates => _dataUpdateController.stream;
 
+
+  Future<int?> getCurrentUserId() async {
+    final storage = FlutterSecureStorage();
+    String? userIdStr = await storage.read(key: 'id');
+    if (userIdStr != null) {
+      return int.parse(userIdStr);
+    }
+    return null;
+  }
 
   Future<void> initializeMqttClient() async {
     client = MqttServerClient('broker.emqx.io', 'flutter_client_android');
@@ -41,31 +51,40 @@ class MqttService {
     });
   }
 
-  void _handleSensorData(String payload) {
+  void _handleSensorData(String payload) async {
     final parts = payload.split(', ');
     final heartRate = parts[0].split(': ')[1];
     final calories = parts[1].split(': ')[1];
     final steps = parts[2].split(': ')[1];
     final distance = parts[3].split(': ')[1];
     final speed = parts[4].split(': ')[1];
-    final userId = parts[5].split(': ')[1];
-    final water = parts[6].split(': ')[1];
+    final water = parts[5].split(': ')[1];
+    final int? userId = await getCurrentUserId();
+
+    if (userId == null) {
+    print("User ID is null, cannot handle sensor data.");
+    return;
+  }
 
     final sensorData = SensorData(
-      userId: int.parse(userId),
+      userId: userId,
       heartRate: heartRate,
       calories: calories,
       steps: steps,
       distance: distance,
       speed: speed,
       water: water,
+      receivedDate: DateTime.now(),
     );
+
+    
+
 
     dbHelper.insertSensorData(sensorData).then((id) {
       print('Sensor data inserted with id: $id');
     });
 
-    _dataUpdateController.add(true);
+    _dataUpdateController.add(sensorData);
   }
 
   void onConnected() {

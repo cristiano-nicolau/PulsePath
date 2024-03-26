@@ -7,8 +7,9 @@ class SensorData {
   final String distance;
   final String speed;
   final String water;
+  DateTime receivedDate;
 
-  SensorData({this.id, required this.userId,required this.heartRate,  required this.calories, required this.steps, required this.distance, required this.speed, required this.water});
+  SensorData({this.id, required this.userId,required this.heartRate,  required this.calories, required this.steps, required this.distance, required this.speed, required this.water, required this.receivedDate});
 
   Map<String, dynamic> toMap() {
     return {
@@ -20,6 +21,7 @@ class SensorData {
       'distance': distance,
       'speed': speed,
       'water': water,
+      'receivedDate': receivedDate.toIso8601String(),
     };
   }
 }
