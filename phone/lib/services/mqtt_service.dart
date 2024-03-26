@@ -43,6 +43,7 @@ class MqttService {
     final distance = parts[3].split(': ')[1];
     final speed = parts[4].split(': ')[1];
     final userId = parts[5].split(': ')[1];
+    final water = parts[6].split(': ')[1];
 
     final sensorData = SensorData(
       userId: int.parse(userId),
@@ -51,6 +52,7 @@ class MqttService {
       steps: steps,
       distance: distance,
       speed: speed,
+      water: water,
     );
 
     dbHelper.insertSensorData(sensorData).then((id) {

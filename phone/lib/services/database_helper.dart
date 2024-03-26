@@ -34,7 +34,8 @@ class DatabaseHelper {
       calories $textType,
       steps $textType,
       distance $textType,
-      speed $textType
+      speed $textType,
+      water $textType
     )
   ''');
 
@@ -53,7 +54,7 @@ class DatabaseHelper {
   Future<int> insertSensorData(SensorData data) async {
     final db = await instance.database;
     final id = await db.insert('sensorData', data.toMap());
-    print('InsertSensorData: Inserido com sucesso | ID: $id, Heart Rate: ${data.heartRate}, Calories: ${data.calories}, Steps: ${data.steps}, Distance: ${data.distance}, Speed: ${data.speed}');
+    print('InsertSensorData: Inserido com sucesso | ID: $id, Heart Rate: ${data.heartRate}, Calories: ${data.calories}, Steps: ${data.steps}, Distance: ${data.distance}, Speed: ${data.speed}, Water: ${data.water}');
     return id;
   }
 
@@ -71,6 +72,7 @@ class DatabaseHelper {
       steps: json['steps'] as String,
       distance: json['distance'] as String,
       speed: json['speed'] as String,
+      water: json['water'] as String,
     )).toList();
   }
 
