@@ -75,8 +75,11 @@ class DatabaseHelper {
 
   Future<int> insertSensorData(SensorData data) async {
     final db = await instance.database;
+    final timestamp = DateTime.now().toString();
+    final map = data.toMap();
     final id = await db.insert('sensorData', data.toMap());
-    print('InsertSensorData: Inserido com sucesso | ID: $id, Heart Rate: ${data.heartRate}, Calories: ${data.calories}, Steps: ${data.steps}, Distance: ${data.distance}, Speed: ${data.speed}, Water: ${data.water}');
+    map['receivedDate'] = timestamp;
+    print('InsertSensorData: Inserido com sucesso | ID: $id, Heart Rate: ${data.heartRate}, Calories: ${data.calories}, Steps: ${data.steps}, Distance: ${data.distance}, Speed: ${data.speed}, Water: ${data.water}, Received Date: $timestamp');
     return id;
   }
 
