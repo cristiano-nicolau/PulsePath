@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class NameField extends StatefulWidget {
   final bool fadeName;
   final TextEditingController nameController;
-  const NameField({Key? key, required this.nameController, required this.fadeName})
+  const NameField(
+      {Key? key, required this.nameController, required this.fadeName})
       : super(key: key);
 
   @override
@@ -55,7 +56,7 @@ class _NameFieldState extends State<NameField>
         TweenAnimationBuilder<double>(
           duration: Duration(milliseconds: 300),
           tween: Tween(begin: 0, end: widget.fadeName ? 0 : 1),
-        builder: ((_, value, __) => Opacity(
+          builder: ((_, value, __) => Opacity(
                 opacity: value,
                 child: TextFormField(
                   controller: nameController,
@@ -64,14 +65,12 @@ class _NameFieldState extends State<NameField>
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) async {
                     if (value.isNotEmpty) {
-                        setState(() {
-                          bottomAnimationValue = 0;
-                          opacityAnimationValue = 1;
-                          paddingAnimationValue = EdgeInsets.only(top: 0);
-                        });
-                        _animationController.forward();
-
-                      
+                      setState(() {
+                        bottomAnimationValue = 0;
+                        opacityAnimationValue = 1;
+                        paddingAnimationValue = EdgeInsets.only(top: 0);
+                      });
+                      _animationController.forward();
                     } else {
                       setState(() {
                         bottomAnimationValue = 0;
@@ -128,4 +127,4 @@ class _NameFieldState extends State<NameField>
       ],
     );
   }
-    }
+}

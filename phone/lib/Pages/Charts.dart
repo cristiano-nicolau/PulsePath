@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-
 
 class ChartsPage extends StatefulWidget {
   const ChartsPage({Key? key}) : super(key: key);
 
-  
   @override
   _ChartsPageState createState() => _ChartsPageState();
 }
+
 class _ChartsPageState extends State<ChartsPage> {
   @override
   Widget build(BuildContext context) {

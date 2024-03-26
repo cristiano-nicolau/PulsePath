@@ -5,8 +5,6 @@ import 'package:phone/components/GenderCard.dart';
 import 'package:phone/models/userinfo.dart';
 import 'package:phone/services/database_helper.dart';
 
-
-
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
 
@@ -118,37 +116,35 @@ class _InitialPageState extends State<InitialPage> {
             ),
             SizedBox(height: 50),
             ElevatedButton(
-             
-              child: Icon(Icons.arrow_forward, color: Colors.white),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF00335E),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-               onPressed: () async {
-                // vai buscar o id do user ao storage
-                // e guarda a informação do user
-                await storage.read(key: 'id').then((value) {
-                 final data = UserInfo(
-                    userId: int.parse(value!),
-                    gender: selectedGender,
-                    age: age.round().toString(),
-                    weight: weight.round().toString(),
-                    height: height.round().toString(),
-                 );
+                child: Icon(Icons.arrow_forward, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00335E),
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  textStyle:
+                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () async {
+                  // vai buscar o id do user ao storage
+                  // e guarda a informação do user
+                  await storage.read(key: 'id').then((value) {
+                    final data = UserInfo(
+                      userId: int.parse(value!),
+                      gender: selectedGender,
+                      age: age.round().toString(),
+                      weight: weight.round().toString(),
+                      height: height.round().toString(),
+                    );
 
-                 DatabaseHelper.instance.insertUsersInfo(data)
-               
-                 .then((value) {
-                   print('User info inserida com sucesso');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainPage()),
-                );                 });
-                });}
-            ),
+                    DatabaseHelper.instance.insertUsersInfo(data).then((value) {
+                      print('User info inserida com sucesso');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainPage()),
+                      );
+                    });
+                  });
+                }),
           ],
-          
         ),
       ),
     );

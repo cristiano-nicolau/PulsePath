@@ -9,7 +9,6 @@ class register_button extends StatefulWidget {
     required this.onTap,
     required this.onAnimatinoEnd,
     required this.elementsOpacity,
-    
   }) : super(key: key); // Remove super.key and use the provided key parameter
 
   @override

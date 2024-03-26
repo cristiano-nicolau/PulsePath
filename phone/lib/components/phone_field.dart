@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class PhoneField extends StatefulWidget {
   final bool fadePhone;
   final TextEditingController phoneController;
-  const PhoneField({Key? key, required this.phoneController, required this.fadePhone})
+  const PhoneField(
+      {Key? key, required this.phoneController, required this.fadePhone})
       : super(key: key);
 
   @override
@@ -64,14 +65,12 @@ class _PhoneFieldState extends State<PhoneField>
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) async {
                     if (value.isNotEmpty && value.length == 9) {
-                     
-                        setState(() {
-                          bottomAnimationValue = 0;
-                          opacityAnimationValue = 1;
-                          paddingAnimationValue = EdgeInsets.only(top: 0);
-                        });
-                        _animationController.forward();
-                     
+                      setState(() {
+                        bottomAnimationValue = 0;
+                        opacityAnimationValue = 1;
+                        paddingAnimationValue = EdgeInsets.only(top: 0);
+                      });
+                      _animationController.forward();
                     } else {
                       setState(() {
                         bottomAnimationValue = 0;
@@ -80,8 +79,8 @@ class _PhoneFieldState extends State<PhoneField>
                   },
                 ),
               )),
-         ),
-         Positioned.fill(
+        ),
+        Positioned.fill(
           child: Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedContainer(

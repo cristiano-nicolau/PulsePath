@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:phone/Pages/Charts.dart';
 import 'package:phone/Pages/DataPage.dart';
-import 'package:phone/Pages/Login.dart';
 import 'package:phone/components/NavigationBar.dart';
-import 'package:phone/components/card.dart';
-import 'package:phone/services/mqtt_service.dart';
-import 'package:phone/styles/colors.dart';
-import '../services/database_helper.dart';
-import '../../models/sensor_data_model.dart';
 import 'ProfilePage.dart';
 
 class MainPage extends StatefulWidget {

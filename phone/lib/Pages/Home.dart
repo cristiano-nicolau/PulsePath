@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'MainPage.dart';
 import 'Login.dart';
-import '../services/mqtt_service.dart';
-
 
 class HomePage extends StatelessWidget {
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -21,38 +19,37 @@ class HomePage extends StatelessWidget {
               width: 250,
               height: 450,
             ),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Welcome to \nyour personal \nhealth assistant',
               style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () async {
                 String? token = await storage.read(key: 'token');
                 String? name = await storage.read(key: 'name');
-                String? id = await storage.read(key: 'id');
                 if (token != null) {
                   print("Token encontrado");
                   print(name);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainPage()),
+                    MaterialPageRoute(builder: (context) => const MainPage()),
                   );
                 } else {
                   print("Token não encontrado");
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 }
               },
-              child: Icon(Icons.arrow_forward, color: Colors.white),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                textStyle: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
+              child: const Icon(Icons.arrow_forward, color: Colors.white),
             ),
           ],
         ),

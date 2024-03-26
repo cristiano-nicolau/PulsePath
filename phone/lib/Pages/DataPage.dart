@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:phone/Pages/Login.dart';
 import 'package:phone/Pages/MainPage.dart';
 import 'package:phone/components/card.dart';
 import 'package:phone/services/mqtt_service.dart';
-import 'package:phone/styles/colors.dart';
-import '../services/database_helper.dart';
-import '../../models/sensor_data_model.dart';
-import 'ProfilePage.dart';
 
 class SensorDataPage extends StatefulWidget {
   const SensorDataPage({Key? key}) : super(key: key);
@@ -16,9 +11,7 @@ class SensorDataPage extends StatefulWidget {
   _SensorDataPageState createState() => _SensorDataPageState();
 }
 
-
 class _SensorDataPageState extends State<SensorDataPage> {
-  Future<List<SensorData>> _sensorData = DatabaseHelper.instance.fetchSensorData();
 
   final storage = const FlutterSecureStorage();
   // Dynamic data properties
@@ -242,5 +235,3 @@ class _SensorDataPageState extends State<SensorDataPage> {
     );
   }
 }
-
-
