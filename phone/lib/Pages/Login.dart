@@ -7,7 +7,7 @@ import '../components/email_field.dart';
 import '../components/password_field.dart';
 import '../components/get_started_button.dart';
 import 'Register.dart';
-import 'sensor_data_page.dart';
+import 'MainPage.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SensorDataPage()),
+        MaterialPageRoute(builder: (context) => MainPage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
         child: loadingBallAppear
             ? Padding(
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30.0),
-                                child:  SensorDataPage(),
+                                child:  MainPage(),
 
                 )
             : Padding(

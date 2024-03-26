@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:phone/Pages/sensor_data_page.dart';
+import 'package:phone/Pages/MainPage.dart';
 import 'package:phone/components/GenderCard.dart';
 import 'package:phone/models/userinfo.dart';
 import 'package:phone/services/database_helper.dart';
@@ -143,7 +143,7 @@ class _InitialPageState extends State<InitialPage> {
                    print('User info inserida com sucesso');
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SensorDataPage()),
+                  MaterialPageRoute(builder: (context) => MainPage()),
                 );                 });
                 });}
             ),
