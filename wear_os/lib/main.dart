@@ -24,65 +24,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPageOrSensorStatsPage extends StatefulWidget {
-  const LoginPageOrSensorStatsPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageOrSensorStatsPageState createState() => _LoginPageOrSensorStatsPageState();
-}
-
-class _LoginPageOrSensorStatsPageState extends State<LoginPageOrSensorStatsPage> {
-  bool _isLoggedIn = false;
-  StreamSubscription<Map<String, dynamic>>? _messageSubscription;
-/*
-  @override
-    void initState() {
-    super.initState();
-  }
-  
-  void _listenForLogin() {
-    _messageSubscription = WatchListener.listenForMessage((msg) {
-      if (msg.containsKey('token')) {
-        setState(() {
-          _isLoggedIn = true;
-        });
-        // You might want to save the token using a secure storage solution
-      }
-    }) as StreamSubscription<Map<String, dynamic>>?;
-  }
-  */
-  @override
-  void dispose() {
-    _messageSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _isLoggedIn ? SensorStatsPage() : const LoginPromptPage();
-  }
-}
-
-class LoginPromptPage extends StatelessWidget {
-  const LoginPromptPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // This page is shown if waiting for the user to log in on the phone app
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Waiting for user to login'),
-            const SizedBox(height: 20),
-            CircularProgressIndicator(),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class SensorStatsPage extends StatefulWidget {
   const SensorStatsPage({Key? key}) : super(key: key);
