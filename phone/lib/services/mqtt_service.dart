@@ -74,6 +74,7 @@ class MqttService {
       distance: distance,
       speed: speed,
       water: water,
+      receivedDate: DateTime.now(),
     );
 
     
