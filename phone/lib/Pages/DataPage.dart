@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:phone/Pages/Login.dart';
+import 'package:phone/Pages/MainPage.dart';
 import 'package:phone/components/card.dart';
 import 'package:phone/services/mqtt_service.dart';
 import 'package:phone/styles/colors.dart';
-
+import '../services/database_helper.dart';
+import '../../models/sensor_data_model.dart';
+import 'ProfilePage.dart';
 
 class SensorDataPage extends StatefulWidget {
   const SensorDataPage({Key? key}) : super(key: key);
@@ -13,10 +16,9 @@ class SensorDataPage extends StatefulWidget {
   _SensorDataPageState createState() => _SensorDataPageState();
 }
 
-enum NavBarItem { Profile, Home, Logout }
 
 class _SensorDataPageState extends State<SensorDataPage> {
-  NavBarItem _selectedItem = NavBarItem.Home; // Item inicialmente selecionado
+  Future<List<SensorData>> _sensorData = DatabaseHelper.instance.fetchSensorData();
 
   final storage = const FlutterSecureStorage();
   // Dynamic data properties
@@ -34,24 +36,23 @@ class _SensorDataPageState extends State<SensorDataPage> {
     super.initState();
     storage.write(key: 'lastUpdate', value: DateTime.now().toString());
     _getNameFromStorage();
-    _listenToMqttUpdates();
+     MqttService().dataUpdates.listen((_) => _fetchSensorData());
   }
 
-  void _listenToMqttUpdates() {
-    // Initialize the MQTT client and listen for incoming data
-    final mqttService = MqttService();
-    mqttService.initializeMqttClient();
-    mqttService.dataUpdates.listen((sensorData) {
-      // Directly update the UI with incoming sensor data
+  void _fetchSensorData() async {
+    // Fetch the latest sensor data from the database and update the state
+    final sensorDataList = await DatabaseHelper.instance.fetchSensorData();
+    if (sensorDataList.isNotEmpty) {
+      final latestData = sensorDataList.last;
       setState(() {
-        heartRate = sensorData.heartRate;
-        steps = sensorData.steps;
-        distance = sensorData.distance;
-        calories = sensorData.calories;
-        water = sensorData.water;
-        speed = sensorData.speed;
+        heartRate = latestData.heartRate;
+        steps = latestData.steps;
+        distance = latestData.distance;
+        calories = latestData.calories;
+        water = "Dynamically update this"; // Example, adjust accordingly
+        speed = latestData.speed;
       });
-    });
+    }
   }
 
   String _calculateTimeDifference(String storedTime) {
@@ -87,30 +88,6 @@ class _SensorDataPageState extends State<SensorDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
-        height: 60,
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        decoration: BoxDecoration(
-          color: blueColor.withOpacity(0.8),
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: blueColor.withOpacity(0.3),
-              offset: const Offset(0, 20),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildNavBarItem(NavBarItem.Profile, Icons.person_rounded),
-            buildNavBarItem(NavBarItem.Home, Icons.home_rounded),
-            buildNavBarItem(NavBarItem.Logout, Icons.logout),
-          ],
-        ),
-      ),
       body: Column(
         children: [
           const SizedBox(height: 75),
@@ -188,7 +165,7 @@ class _SensorDataPageState extends State<SensorDataPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SensorDataPage()),
+                            builder: (context) => const MainPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -263,91 +240,7 @@ class _SensorDataPageState extends State<SensorDataPage> {
       ),
     );
   }
-
-  Widget buildNavBarItem(NavBarItem item, IconData icon) {
-    bool isSelected = _selectedItem == item;
-    return GestureDetector(
-      onTap: () {
-        if (item == NavBarItem.Logout) {
-          _showLogoutConfirmationDialog(context);
-        } else {
-          setState(() {
-            _selectedItem = item;
-          });
-        }
-      },
-      child: Container(
-        width: 90,
-        height: 90,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? blueColor : Colors.white,
-          size: 30,
-        ),
-      ),
-    );
-  }
-
-  void _showLogoutConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            "Logout",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text("Are you sure you want to log out?"),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Fechar o diálogo
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text(
-                    "No",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                TextButton(
-                  onPressed: () {
-                    // Executar logout
-                    storage.deleteAll();
-                    // Por exemplo, navegar para a tela de login
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.red,
-                  ),
-                  child: const Text(
-                    "Yes",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
+
+
+

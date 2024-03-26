@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'sensor_data_page.dart';
+import 'MainPage.dart';
 import 'Login.dart';
 import '../services/mqtt_service.dart';
 
@@ -31,12 +31,13 @@ class HomePage extends StatelessWidget {
               onPressed: () async {
                 String? token = await storage.read(key: 'token');
                 String? name = await storage.read(key: 'name');
+                String? id = await storage.read(key: 'id');
                 if (token != null) {
                   print("Token encontrado");
                   print(name);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SensorDataPage()),
+                    MaterialPageRoute(builder: (context) => MainPage()),
                   );
                 } else {
                   print("Token não encontrado");

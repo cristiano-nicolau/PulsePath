@@ -198,6 +198,29 @@ Future<Map<String, dynamic>?> insertUserData(UserData data) async {
     return id;
   }
 
+  //buscar info do user + os dados do user atraves do id recebido + token
+  Future<Map<dynamic,dynamic>> fetchUsersInfo(int userId) async {
+    final db = await instance.database;
+    final user_info = await db.query('info', where: 'userId = ?', whereArgs: [userId]);
+    final user_data = await db.query('users', where: 'id = ?', whereArgs: [userId]);
+    print('FetchUsersInfo: Dados buscados com sucesso | Quantidade de registos: ${user_info.length}');
+    print('FetchUsersInfo: Dados buscados com sucesso | Quantidade de registos: ${user_data.length}');
+
+    if (user_info.isNotEmpty && user_data.isNotEmpty) {
+      return {
+        'id': user_info[0]['id'] as int?,
+        'weight': user_info[0]['weight'] as String,
+        'height': user_info[0]['height'] as String,
+        'age': user_info[0]['age'] as String,
+        'gender': user_info[0]['gender'] as String,
+        'name': user_data[0]['name'] as String,
+        'email': user_data[0]['email'] as String,
+        'phone': user_data[0]['phone'] as String,
+      };
+    } else {
+      return {};
+    }
+  }
 
   Future close() async {
     final db = await instance.database;
