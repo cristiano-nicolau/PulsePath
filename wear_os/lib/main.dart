@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:workout/workout.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:watch_ble_connection/watch_ble_connection.dart';
 import 'package:weather/weather.dart';
 
 void main() => runApp(const MyApp());
@@ -16,16 +17,71 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
-        cardTheme: CardTheme(
-          color: Colors.grey[800],
-          shadowColor: Colors.black,
-          elevation: 5,
-        ),
-        textTheme: const TextTheme(
-          bodyText2: TextStyle(color: Colors.white),
+        cardTheme: CardTheme(color: Colors.grey[800], shadowColor: Colors.black, elevation: 5),
+        textTheme: const TextTheme(bodyText2: TextStyle(color: Colors.white)),
+      ),
+      home: const LoginPageOrSensorStatsPage(),
+    );
+  }
+}
+
+class LoginPageOrSensorStatsPage extends StatefulWidget {
+  const LoginPageOrSensorStatsPage({Key? key}) : super(key: key);
+
+  @override
+  _LoginPageOrSensorStatsPageState createState() => _LoginPageOrSensorStatsPageState();
+}
+
+class _LoginPageOrSensorStatsPageState extends State<LoginPageOrSensorStatsPage> {
+  bool _isLoggedIn = false;
+  StreamSubscription<Map<String, dynamic>>? _messageSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _listenForLogin();
+  }
+
+  void _listenForLogin() {
+    _messageSubscription = WatchListener.listenForMessage((msg) {
+      if (msg.containsKey('token')) {
+        setState(() {
+          _isLoggedIn = true;
+        });
+        // You might want to save the token using a secure storage solution
+      }
+    }) as StreamSubscription<Map<String, dynamic>>?;
+  }
+
+  @override
+  void dispose() {
+    _messageSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoggedIn ? SensorStatsPage() : const LoginPromptPage();
+  }
+}
+
+class LoginPromptPage extends StatelessWidget {
+  const LoginPromptPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // This page is shown if waiting for the user to log in on the phone app
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Waiting for user to login'),
+            const SizedBox(height: 20),
+            CircularProgressIndicator(),
+          ],
         ),
       ),
-      home: const SensorStatsPage(),
     );
   }
 }

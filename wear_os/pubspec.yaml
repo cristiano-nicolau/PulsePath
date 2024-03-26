@@ -38,6 +38,7 @@ dependencies:
   mqtt_client: ^10.2.0
   workout: ^0.6.3
   weather: ^3.1.1
+  watch_ble_connection: ^1.0.1
 
 dev_dependencies:
   flutter_test:
