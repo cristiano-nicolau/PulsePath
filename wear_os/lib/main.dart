@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:workout/workout.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:watch_ble_connection/watch_ble_connection.dart';
 import 'package:weather/weather.dart';
 
 void main() => runApp(const MyApp());
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         cardTheme: CardTheme(color: Colors.grey[800], shadowColor: Colors.black, elevation: 5),
         textTheme: const TextTheme(bodyText2: TextStyle(color: Colors.white)),
       ),
-      home: const LoginPageOrSensorStatsPage(),
+      home: const SensorStatsPage(),
     );
   }
 }
@@ -35,13 +34,12 @@ class LoginPageOrSensorStatsPage extends StatefulWidget {
 class _LoginPageOrSensorStatsPageState extends State<LoginPageOrSensorStatsPage> {
   bool _isLoggedIn = false;
   StreamSubscription<Map<String, dynamic>>? _messageSubscription;
-
+/*
   @override
-  void initState() {
+    void initState() {
     super.initState();
-    _listenForLogin();
   }
-
+  
   void _listenForLogin() {
     _messageSubscription = WatchListener.listenForMessage((msg) {
       if (msg.containsKey('token')) {
@@ -52,7 +50,7 @@ class _LoginPageOrSensorStatsPageState extends State<LoginPageOrSensorStatsPage>
       }
     }) as StreamSubscription<Map<String, dynamic>>?;
   }
-
+  */
   @override
   void dispose() {
     _messageSubscription?.cancel();
@@ -134,69 +132,88 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
 
     try {
       await client.connect();
+      print('Connected to the MQTT broker');
     } catch (e) {
       print('Exception: $e');
       client.disconnect();
     }
   }
 
-  void startWorkoutListener() {
-    workout
-        .start(
-      exerciseType: ExerciseType.walking,
-      features: [
-        WorkoutFeature.heartRate,
-        WorkoutFeature.calories,
-        WorkoutFeature.steps,
-        WorkoutFeature.distance,
-        WorkoutFeature.speed,
-      ],
-      enableGps: true,
-    )
-        .then((result) {
-      if (result.unsupportedFeatures.isNotEmpty) {
-        print('Unsupported features: ${result.unsupportedFeatures}');
-      } else {
-        print(
-            'Workout started successfully with all requested features supported');
-        workout.stream.listen((event) {
-          print('Received workout update: $event');
-          setState(() {
-            switch (event.feature) {
-              case WorkoutFeature.heartRate:
-                heartRate = event.value;
-                break;
-              case WorkoutFeature.calories:
-                calories = event.value;
-                break;
-              case WorkoutFeature.steps:
-                steps = event.value;
-                break;
-              case WorkoutFeature.distance:
-                distance = event.value;
-                break;
-              case WorkoutFeature.speed:
-                speed = event.value;
-                break;
-              default:
-                break;
-            }
-          });
+  Timer? _periodicUpdateTimer;
+
+void startWorkoutListener() {
+  workout.start(
+    exerciseType: ExerciseType.walking,
+    features: [
+      WorkoutFeature.heartRate,
+      WorkoutFeature.calories,
+      WorkoutFeature.steps,
+      WorkoutFeature.distance,
+      WorkoutFeature.speed,
+    ],
+    enableGps: true,
+  ).then((result) {
+    if (result.unsupportedFeatures.isEmpty) {
+      print('Workout started successfully with all requested features supported');
+
+      // Initialize and start the timer to periodically call publishSensorData
+      _periodicUpdateTimer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
+        publishSensorData();
+      });
+
+      workout.stream.listen((event) {
+        print('Received workout update: $event');
+        setState(() {
+          switch (event.feature) {
+            case WorkoutFeature.heartRate:
+              heartRate = event.value;
+              break;
+            case WorkoutFeature.calories:
+              calories = event.value;
+              break;
+            case WorkoutFeature.steps:
+              steps = event.value;
+              break;
+            case WorkoutFeature.distance:
+              distance = event.value;
+              break;
+            case WorkoutFeature.speed:
+              speed = event.value;
+              break;
+            default:
+              break;
+          }
         });
-      }
-    }).catchError((error) {
-      print('Error starting workout: $error');
-    });
-  }
+      });
+    }
+  }).catchError((error) {
+    print('Error starting workout: $error');
+  });
+}
+
+@override
+void dispose() {
+  // Cancel the timer when the widget is disposed to prevent memory leaks
+  _periodicUpdateTimer?.cancel();
+  super.dispose();
+}
+
 
   void publishSensorData() {
+    final roundedHeartRate = heartRate.round().toString();
+    final roundedSteps = steps.round().toString();
+    final roundedDistance = distance.toStringAsFixed(1);
+    final roundedSpeed = speed.toStringAsFixed(1);
+    final roundedCalories = calories.toStringAsFixed(1);
+
     final sensorData =
-        'Heart Rate: $heartRate, Calories: $calories, Steps: $steps, Distance: $distance, Speed: $speed, Water Intake: $waterIntake';
+        'Heart Rate: $roundedHeartRate, Calories: $roundedCalories, Steps: $roundedSteps, Distance: $roundedDistance, Speed: $roundedSpeed, Water Intake: $waterIntake';
 
     final builder = MqttClientPayloadBuilder();
     builder.addString(sensorData);
 
     client.publishMessage('sensor/data', MqttQos.atLeastOnce, builder.payload!);
+    print("message sent");
   }
 
   @override

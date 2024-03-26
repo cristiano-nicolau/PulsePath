@@ -34,7 +34,7 @@ class DatabaseHelper {
  await db.execute('''
     CREATE TABLE IF NOT EXISTS sensorData (
       id $idType,
-      userId $idType,
+      userId $id,
       heartRate $textType,
       calories $textType,
       steps $textType,
