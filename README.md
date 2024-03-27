@@ -44,7 +44,7 @@ The core concept of our application revolves around a comprehensive fitness and 
 
 ## Documentation
 
-- [PulsePath Documentation](https://github.com/cristiano-nicolau/PulsePath/ICM_G05_PulsePath.pdf)
+- [PulsePath Documentation](https://github.com/cristiano-nicolau/PulsePath/blob/main/ICM_G05_PulsePath.pdf)
 
 
 ### Authors
