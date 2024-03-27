@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import '../models/heart_rate_model.dart';
 import '../models/sensor_data_model.dart';
 import '../models/users.dart';
 import '../models/userinfo.dart';
@@ -89,18 +90,134 @@ class DatabaseHelper {
     final result = await db.query('sensorData');
     print('FetchSensorData: Dados buscados com sucesso | Quantidade de registos: ${result.length}');
 
-    return result.map((json) => SensorData(
-      id: json['id'] as int?,
-      userId: json['userId'] as int,
-      heartRate: json['heartRate'] as String,
-      calories: json['calories'] as String,
-      steps: json['steps'] as String,
-      distance: json['distance'] as String,
-      speed: json['speed'] as String,
-      water: json['water'] as String,
-      receivedDate: DateTime.parse(json['receivedDate'] as String),
-    )).toList();
+    return result.map((json) => SensorData.fromMap(json)).toList();
   }
+
+  Future<List<SensorData>> fetchTodaysHeartRateData() async {
+  final db = await database;
+  final today = DateTime.now();
+  final startDate = DateTime(today.year, today.month, today.day);
+  final endDate = DateTime(today.year, today.month, today.day, 23, 59, 59);
+
+  final List<Map<String, dynamic>> maps = await db.query(
+    'sensorData',
+    where: "receivedDate BETWEEN ? AND ?",
+    whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
+    orderBy: "receivedDate ASC", // Order by date ascending to get chronological order
+  );
+
+  print("This is the map:");
+  print(maps);
+
+  return List.generate(maps.length, (i) {
+    return SensorData.fromMap(maps[i]);
+  });
+}
+
+Future<List<HeartRateExtremes>> fetchWeeklyHeartRateData() async {
+  final db = await database;
+  final endDate = DateTime.now();
+  final startDate = endDate.subtract(Duration(days: 6));
+
+  String startDateStr = startDate.toIso8601String().split('T').first;
+  String endDateStr = endDate.toIso8601String().split('T').first;
+
+  final result = await db.rawQuery('''
+    SELECT 
+      MIN(heartRate) AS minHeartRate, 
+      MAX(heartRate) AS maxHeartRate, 
+      DATE(receivedDate) AS date 
+    FROM sensorData 
+    WHERE DATE(receivedDate) BETWEEN ? AND ? 
+    GROUP BY DATE(receivedDate)
+    ORDER BY DATE(receivedDate) ASC
+  ''', [startDateStr, endDateStr]);
+
+  print(result);
+
+  return result.map((row) => HeartRateExtremes.fromMap(row)).toList();
+}
+
+  Future<List<HeartRateExtremes>> fetchMonthlyHeartRateData() async {
+  final db = await database;
+  final endDate = DateTime.now();
+  final startDate = endDate.subtract(Duration(days: 29)); // Changed to fetch the last 30 days
+
+  String startDateStr = startDate.toIso8601String().split('T').first;
+  String endDateStr = endDate.toIso8601String().split('T').first;
+
+  final result = await db.rawQuery('''
+    SELECT 
+      MIN(heartRate) AS minHeartRate, 
+      MAX(heartRate) AS maxHeartRate, 
+      DATE(receivedDate) AS date 
+    FROM sensorData 
+    WHERE DATE(receivedDate) BETWEEN ? AND ? 
+    GROUP BY DATE(receivedDate)
+    ORDER BY DATE(receivedDate) ASC
+  ''', [startDateStr, endDateStr]);
+
+  print(result);
+
+  return result.map((row) => HeartRateExtremes.fromMap(row)).toList();
+}
+
+
+
+
+    // Fetch sensor data for the last day
+  Future<List<SensorData>> fetchDailySensorData() async {
+    final db = await instance.database;
+  final result = await db.query(
+    'sensorData',
+    orderBy: "receivedDate DESC",
+    limit: 1, // Only fetch the most recent entry
+  );
+  print('FetchMostRecentSensorData: Most recent data fetched successfully');
+  print(result);
+  return result.map((json) => SensorData.fromMap(json)).toList();
+
+}
+
+  // Fetch the last record of each day for the last 7 days
+  Future<List<SensorData>> fetchWeeklySensorData() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('''
+      WITH DateGroups AS (
+        SELECT
+          DATE(receivedDate) AS dateOnly,
+          MAX(receivedDate) AS maxReceivedDate
+        FROM sensorData
+        WHERE receivedDate >= DATE('now', '-6 days')
+        GROUP BY dateOnly
+      )
+      SELECT s.* FROM sensorData s
+      INNER JOIN DateGroups d ON DATE(s.receivedDate) = d.dateOnly AND s.receivedDate = d.maxReceivedDate
+      ORDER BY s.receivedDate DESC
+    ''');
+    return result.map((json) => SensorData.fromMap(json)).toList();
+  }
+
+    // Fetch the last record of each day for the last 30 days
+  Future<List<SensorData>> fetchMonthlySensorData() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('''
+      WITH DateGroups AS (
+        SELECT
+          DATE(receivedDate) AS dateOnly,
+          MAX(receivedDate) AS maxReceivedDate
+        FROM sensorData
+        WHERE receivedDate >= DATE('now', '-29 days')
+        GROUP BY dateOnly
+      )
+      SELECT s.* FROM sensorData s
+      INNER JOIN DateGroups d ON DATE(s.receivedDate) = d.dateOnly AND s.receivedDate = d.maxReceivedDate
+      ORDER BY s.receivedDate DESC
+    ''');
+    return result.map((json) => SensorData.fromMap(json)).toList();
+  }
+
+
 
   // dar register de um user
 Future<Map<String, dynamic>?> insertUserData(UserData data) async {

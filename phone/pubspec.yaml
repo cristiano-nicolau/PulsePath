@@ -41,7 +41,7 @@ dependencies:
   dart_jsonwebtoken: ^2.13.0
   flutter_secure_storage: ^4.2.1
   flutter_svg : ^2.0.0
-  syncfusion_flutter_charts: ^25.1.35
+  syncfusion_flutter_charts: ^25.1.37
   syncfusion_flutter_core: ^25.1.35
   tab_indicator_styler: ^2.0.0
 
