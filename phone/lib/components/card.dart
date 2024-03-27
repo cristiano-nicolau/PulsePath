@@ -54,14 +54,14 @@ class CustomCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                        fontSize: 35,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: color),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     unit,
-                    style: TextStyle(fontSize: 28, color: color),
+                    style: TextStyle(fontSize: 20, color: color),
                   ),
                 ],
               ),

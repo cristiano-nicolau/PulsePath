@@ -221,7 +221,7 @@ class _ChartsPageState extends State<ChartsPage> with TickerProviderStateMixin {
           name: 'Distance',
           radius: '40%',
           pointColorMapper: (SensorData data, _) => Colors.blue,
-          maximumValue: 8, // Adjust maximum value as needed
+          maximumValue: 8000, // Adjust maximum value as needed
           dataLabelSettings: const DataLabelSettings(isVisible: true),
         ),
       ],

@@ -162,7 +162,6 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Use MediaQuery to get the screen size
     final screenSize = MediaQuery.of(context).size;
     final pageHeight = screenSize.height;
     final pageWidth = screenSize.width;
@@ -173,7 +172,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
     return Scaffold(
       body: PageView(
         controller: PageController(
-            viewportFraction: 1.0), // Ensure each page takes full screen
+            viewportFraction: 1.0), 
         scrollDirection: Axis.vertical,
         children: [
           Center(
@@ -232,12 +231,11 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
                     color: Colors.green,
                     fontSize: size * 0.1)),
             SizedBox(height: spacing),
-            // Use a Flexible widget to handle the layout of the GridView
             Flexible(
               child: GridView.count(
                 shrinkWrap: true,
                 physics:
-                    const NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
+                    const NeverScrollableScrollPhysics(), 
                 crossAxisCount: 2,
                 mainAxisSpacing: spacing,
                 crossAxisSpacing: spacing,
@@ -252,7 +250,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
                       Icons.directions_walk, '$steps', iconSize, textSize),
                   _iconDetail(Icons.flag, '${distance.toStringAsFixed(2)} m',
                       iconSize, textSize),
-                  _iconDetail(Icons.speed, '${speed.toStringAsFixed(2)} m/s',
+                  _iconDetail(Icons.speed, '${speed.toStringAsFixed(2)} km/h',
                       iconSize, textSize),
                 ],
               ),
@@ -270,7 +268,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
       children: [
         Icon(icon, size: iconSize, color: Colors.white),
         SizedBox(
-            height: iconSize * 0.25), // Adjust spacing between icon and text
+            height: iconSize * 0.25), 
         Text(value, style: TextStyle(fontSize: textSize, color: Colors.white)),
       ],
     );
@@ -320,7 +318,7 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
   }
 
   Widget _waterIntakeTile(double size) {
-    double progressValue = waterIntake / 8.0; // Assuming 8 is the target value
+    double progressValue = waterIntake / 8.0; // 8 is the target value
 
     return Container(
       width: size,
@@ -328,17 +326,16 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Circular Progress Indicator
           SizedBox(
             width: size,
             height: size,
             child: CircularProgressIndicator(
-              value: progressValue, // Current progress
-              strokeWidth: 10, // Width of the progress indicator
+              value: progressValue, 
+              strokeWidth: 10,
               backgroundColor:
-                  Colors.grey, // Background color of the progress bar
+                  Colors.grey, 
               valueColor: const AlwaysStoppedAnimation<Color>(
-                  Colors.blue), // Color of the progress bar
+                  Colors.blue), 
             ),
           ),
           // Water Intake Content

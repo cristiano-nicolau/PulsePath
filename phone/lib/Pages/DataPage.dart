@@ -32,21 +32,29 @@ class _SensorDataPageState extends State<SensorDataPage> {
   }
 
   void _listenToMqttUpdates() {
-    // Initialize the MQTT client and listen for incoming data
-    final mqttService = MqttService();
-    mqttService.initializeMqttClient();
-    mqttService.dataUpdates.listen((sensorData) {
-      // Directly update the UI with incoming sensor data
-      setState(() {
-        heartRate = sensorData.heartRate;
-        steps = sensorData.steps;
-        distance = sensorData.distance;
-        calories = sensorData.calories;
-        water = sensorData.water;
-        speed = sensorData.speed;
-      });
+  // Initialize the MQTT client and listen for incoming data
+  final mqttService = MqttService();
+  mqttService.initializeMqttClient();
+  mqttService.dataUpdates.listen((sensorData) {
+    setState(() {
+      heartRate = sensorData.heartRate;
+      steps = _formatNumber(sensorData.steps);
+      distance = sensorData.distance;
+      calories = sensorData.calories;
+      water = sensorData.water;
+      speed = sensorData.speed;
     });
+  });
+}
+
+String _formatNumber(String number) {
+  int num = int.tryParse(number) ?? 0;
+  if (num >= 100000) {
+    return "${(num / 1000).toStringAsFixed(0)}k";
   }
+  return number;
+}
+
 
   String _calculateTimeDifference(String storedTime) {
     // Parse the stored time string to DateTime object
@@ -199,7 +207,7 @@ class _SensorDataPageState extends State<SensorDataPage> {
                 icon: Icons.flag,
                 color: const Color(0xFF0DB1AD),
                 subtitle: distance,
-                unit: 'km',
+                unit: 'm',
               ),
               CustomCard(
                 title: 'Calories',
