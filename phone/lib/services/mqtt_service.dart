@@ -9,13 +9,13 @@ import '../models/sensor_data_model.dart';
 class MqttService {
   late MqttServerClient client;
   final dbHelper = DatabaseHelper.instance;
-  final StreamController<SensorData> _dataUpdateController = StreamController<SensorData>.broadcast();
+  final StreamController<SensorData> _dataUpdateController =
+      StreamController<SensorData>.broadcast();
 
   Stream<SensorData> get dataUpdates => _dataUpdateController.stream;
 
-
   Future<int?> getCurrentUserId() async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     String? userIdStr = await storage.read(key: 'id');
     if (userIdStr != null) {
       return int.parse(userIdStr);
@@ -45,7 +45,8 @@ class MqttService {
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
-      final String payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final String payload =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       print('MQTT: Mensagem recebida - $payload');
       _handleSensorData(payload);
     });
@@ -62,9 +63,9 @@ class MqttService {
     final int? userId = await getCurrentUserId();
 
     if (userId == null) {
-    print("User ID is null, cannot handle sensor data.");
-    return;
-  }
+      print("User ID is null, cannot handle sensor data.");
+      return;
+    }
 
     final sensorData = SensorData(
       userId: userId,
@@ -76,9 +77,6 @@ class MqttService {
       water: water,
       receivedDate: DateTime.now(),
     );
-
-    
-
 
     dbHelper.insertSensorData(sensorData).then((id) {
       print('Sensor data inserted with id: $id');

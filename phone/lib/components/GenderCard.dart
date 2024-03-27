@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class GenderCard extends StatelessWidget {
@@ -15,7 +14,7 @@ class GenderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: isSelected ? Color(0xFF00335E) : Colors.white,
+      color: isSelected ? const Color(0xFF00335E) : Colors.white,
       child: Container(
         width: 150, // Set the width here
         height: 100, // Set the height here
@@ -29,13 +28,17 @@ class GenderCard extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    color: isSelected ? Colors.white : const Color.fromARGB(255, 0, 0, 0),
+                    color: isSelected
+                        ? Colors.white
+                        : const Color.fromARGB(255, 0, 0, 0),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(
                     gender,
                     style: TextStyle(
-                      color: isSelected ? Colors.white : const Color.fromARGB(255, 0, 0, 0),
+                      color: isSelected
+                          ? Colors.white
+                          : const Color.fromARGB(255, 0, 0, 0),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -43,13 +46,15 @@ class GenderCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               width: 20,
               height: 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? Colors.white : const Color.fromARGB(255, 0, 0, 0),
+                color: isSelected
+                    ? Colors.white
+                    : const Color.fromARGB(255, 0, 0, 0),
               ),
             ),
           ],

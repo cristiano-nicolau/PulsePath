@@ -1,4 +1,4 @@
-class UserInfo{
+class UserInfo {
   final int? id;
   final int? userId;
   final String gender;
@@ -6,7 +6,13 @@ class UserInfo{
   final String weight;
   final String height;
 
-  UserInfo({ this.id, required this.userId, required this.age, required this.gender, required this.height, required this.weight});
+  UserInfo(
+      {this.id,
+      required this.userId,
+      required this.age,
+      required this.gender,
+      required this.height,
+      required this.weight});
 
   Map<String, dynamic> toMap() {
     return {

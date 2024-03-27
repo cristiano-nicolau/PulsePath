@@ -5,8 +5,6 @@ import 'package:phone/components/GenderCard.dart';
 import 'package:phone/models/userinfo.dart';
 import 'package:phone/services/database_helper.dart';
 
-
-
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
 
@@ -19,22 +17,22 @@ class _InitialPageState extends State<InitialPage> {
   double age = 20;
   double weight = 50;
   double height = 150;
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Give us some basic information',
               style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -50,7 +48,7 @@ class _InitialPageState extends State<InitialPage> {
                     isSelected: selectedGender == 'male',
                   ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -65,8 +63,8 @@ class _InitialPageState extends State<InitialPage> {
                 ),
               ],
             ),
-            SizedBox(height: 50),
-            Text(
+            const SizedBox(height: 50),
+            const Text(
               'Age',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
@@ -82,8 +80,8 @@ class _InitialPageState extends State<InitialPage> {
               divisions: 100,
               label: age.round().toString(),
             ),
-            SizedBox(height: 50),
-            Text(
+            const SizedBox(height: 50),
+            const Text(
               'Weight',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
@@ -99,8 +97,8 @@ class _InitialPageState extends State<InitialPage> {
               divisions: 150,
               label: weight.round().toString(),
             ),
-            SizedBox(height: 50),
-            Text(
+            const SizedBox(height: 50),
+            const Text(
               'Height',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
@@ -116,39 +114,39 @@ class _InitialPageState extends State<InitialPage> {
               divisions: 250,
               label: height.round().toString(),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             ElevatedButton(
-             
-              child: Icon(Icons.arrow_forward, color: Colors.white),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF00335E),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-               onPressed: () async {
-                // vai buscar o id do user ao storage
-                // e guarda a informação do user
-                await storage.read(key: 'id').then((value) {
-                 final data = UserInfo(
-                    userId: int.parse(value!),
-                    gender: selectedGender,
-                    age: age.round().toString(),
-                    weight: weight.round().toString(),
-                    height: height.round().toString(),
-                 );
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00335E),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  textStyle: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () async {
+                  // vai buscar o id do user ao storage
+                  // e guarda a informação do user
+                  await storage.read(key: 'id').then((value) {
+                    final data = UserInfo(
+                      userId: int.parse(value!),
+                      gender: selectedGender,
+                      age: age.round().toString(),
+                      weight: weight.round().toString(),
+                      height: height.round().toString(),
+                    );
 
-                 DatabaseHelper.instance.insertUsersInfo(data)
-               
-                 .then((value) {
-                   print('User info inserida com sucesso');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainPage()),
-                );                 });
-                });}
-            ),
+                    DatabaseHelper.instance.insertUsersInfo(data).then((value) {
+                      print('User info inserida com sucesso');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MainPage()),
+                      );
+                    });
+                  });
+                },
+                child: const Icon(Icons.arrow_forward, color: Colors.white)),
           ],
-          
         ),
       ),
     );

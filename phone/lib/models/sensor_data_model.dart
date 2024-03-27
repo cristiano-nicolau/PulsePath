@@ -9,7 +9,16 @@ class SensorData {
   final String water;
   DateTime receivedDate;
 
-  SensorData({this.id, required this.userId,required this.heartRate,  required this.calories, required this.steps, required this.distance, required this.speed, required this.water, required this.receivedDate});
+  SensorData(
+      {this.id,
+      required this.userId,
+      required this.heartRate,
+      required this.calories,
+      required this.steps,
+      required this.distance,
+      required this.speed,
+      required this.water,
+      required this.receivedDate});
 
   factory SensorData.fromMap(Map<String, dynamic> json) => SensorData(
         id: json['id'] as int?,

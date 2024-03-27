@@ -20,7 +20,7 @@ class _register_buttonState extends State<register_button> {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       tween: Tween(begin: 1, end: widget.elementsOpacity),
       onEnd: () async {
         widget.onAnimatinoEnd();
@@ -36,9 +36,9 @@ class _register_buttonState extends State<register_button> {
             height: 75,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Color.fromARGB(255, 224, 227, 231),
+              color: const Color.fromARGB(255, 224, 227, 231),
             ),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(

@@ -48,14 +48,14 @@ class _PasswordFieldState extends State<PasswordField> {
     return Stack(
       children: [
         TweenAnimationBuilder<double>(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           tween: Tween(begin: 0, end: widget.fadePassword ? 0 : 1),
           builder: ((_, value, __) => Opacity(
                 opacity: value,
                 child: TextFormField(
                   controller: passwordController,
                   focusNode: node,
-                  decoration: InputDecoration(hintText: "Password"),
+                  decoration: const InputDecoration(hintText: "Password"),
                   obscureText: obscure,
                   onChanged: (value) {
                     if (value.isEmpty) {
@@ -79,12 +79,12 @@ class _PasswordFieldState extends State<PasswordField> {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               width: widget.fadePassword ? 0 : 300,
               child: TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: bottomAnimationValue),
                 curve: Curves.easeIn,
-                duration: Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 500),
                 builder: ((context, value, child) => LinearProgressIndicator(
                       value: value,
                       backgroundColor: Colors.grey.withOpacity(0.5),
@@ -103,13 +103,13 @@ class _PasswordFieldState extends State<PasswordField> {
                     : widget.fadePassword
                         ? 0
                         : 1),
-            duration: Duration(milliseconds: 700),
+            duration: const Duration(milliseconds: 700),
             builder: ((context, value, child) => Opacity(
                   opacity: value,
                   child: Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0)
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0)
                           .copyWith(bottom: 0),
                       child: GestureDetector(
                         onTap: () {
