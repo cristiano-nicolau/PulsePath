@@ -11,15 +11,15 @@ The core concept of our application revolves around a comprehensive fitness and 
 - Display comprehensive workout statistics and health metrics on both the smartphone app and the WearOS device, including daily, weekly, and monthly summaries.
 
 ## Sensors & mobile functionalities
-WearOS Integration: Ensures a harmonized operation between the smartphone app and the wearable device, providing users with instant access to their fitness data and notifications directly from their wrist.
-Heart Rate Sensor: Utilizes the heart rate sensor in WearOS devices to continuously monitor the user's heart rate during physical activities, offering vital insights into their workout intensity and cardiovascular health.
-Bluetooth Connectivity: Facilitates a reliable connection between the smartphone and the wearable device, enabling the exchange of data and synchronization of health metrics in real-time.
-Step Counter: Integrates with the wearable device's pedometer to count steps accurately, helping users to stay active by setting and achieving daily step goals.
-Calorie Tracker: Utilizes the user's heart rate data and activity level to estimate the number of calories burned during workouts, providing valuable feedback on their fitness progress.
-Distance Tracker: Utilizes GPS data from the smartphone to track the distance covered during outdoor activities such as running and cycling, enabling users to monitor their performance and set distance-based goals.
-Water Counter & Reminder: Allows users to track their daily water intake and receive timely reminders to stay hydrated throughout the day, promoting optimal health and well-being.
-Weather Forecast: Provides real-time weather updates on the WearOS device, enabling users to plan their outdoor workouts effectively based on the current weather conditions.
-MQTT Integration: Utilizes MQTT protocol for seamless communication between the smartphone app and the WearOS device, ensuring efficient data exchange and synchronization.
+- **WearOS Integration:** Ensures a harmonized operation between the smartphone app and the wearable device, providing users with instant access to their fitness data and notifications directly from their wrist.
+- **Heart Rate Sensor:** Utilizes the heart rate sensor in WearOS devices to continuously monitor the user's heart rate during physical activities, offering vital insights into their workout intensity and cardiovascular health.
+- **Bluetooth Connectivity:** Facilitates a reliable connection between the smartphone and the wearable device, enabling the exchange of data and synchronization of health metrics in real-time.
+- **Step Counter:** Integrates with the wearable device's pedometer to count steps accurately, helping users to stay active by setting and achieving daily step goals.
+- **Calorie Tracker:** Utilizes the user's heart rate data and activity level to estimate the number of calories burned during workouts, providing valuable feedback on their fitness progress.
+- **Distance Tracker:** Utilizes GPS data from the smartphone to track the distance covered during outdoor activities such as running and cycling, enabling users to monitor their performance and set distance-based goals.
+- **Water Counter:** Allows users to track their daily water intake, promoting optimal health and well-being.
+- **Weather Forecast:** Provides real-time weather updates on the WearOS device, enabling users to plan their outdoor workouts effectively based on the current weather conditions.
+- **MQTT Integration:** Utilizes MQTT protocol for seamless communication between the smartphone app and the WearOS device, ensuring efficient data exchange and synchronization.
 
 ### How to run the application
 
