@@ -16,15 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
-        cardTheme: CardTheme(color: Colors.grey[800], shadowColor: Colors.black, elevation: 5),
-        textTheme: const TextTheme(bodyText2: TextStyle(color: Colors.white)),
+        cardTheme: CardTheme(
+            color: Colors.grey[800], shadowColor: Colors.black, elevation: 5),
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
       ),
       home: const SensorStatsPage(),
     );
   }
 }
-
-
 
 class SensorStatsPage extends StatefulWidget {
   const SensorStatsPage({Key? key}) : super(key: key);
@@ -83,63 +82,66 @@ class _SensorStatsPageState extends State<SensorStatsPage> {
 
   Timer? _periodicUpdateTimer;
 
-void startWorkoutListener() {
-  workout.start(
-    exerciseType: ExerciseType.walking,
-    features: [
-      WorkoutFeature.heartRate,
-      WorkoutFeature.calories,
-      WorkoutFeature.steps,
-      WorkoutFeature.distance,
-      WorkoutFeature.speed,
-    ],
-    enableGps: true,
-  ).then((result) {
-    if (result.unsupportedFeatures.isEmpty) {
-      print('Workout started successfully with all requested features supported');
+  void startWorkoutListener() {
+    workout
+        .start(
+      exerciseType: ExerciseType.walking,
+      features: [
+        WorkoutFeature.heartRate,
+        WorkoutFeature.calories,
+        WorkoutFeature.steps,
+        WorkoutFeature.distance,
+        WorkoutFeature.speed,
+      ],
+      enableGps: true,
+    )
+        .then((result) {
+      if (result.unsupportedFeatures.isEmpty) {
+        print(
+            'Workout started successfully with all requested features supported');
 
-      // Initialize and start the timer to periodically call publishSensorData
-      _periodicUpdateTimer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
-        publishSensorData();
-      });
-
-      workout.stream.listen((event) {
-        print('Received workout update: $event');
-        setState(() {
-          switch (event.feature) {
-            case WorkoutFeature.heartRate:
-              heartRate = event.value;
-              break;
-            case WorkoutFeature.calories:
-              calories = event.value;
-              break;
-            case WorkoutFeature.steps:
-              steps = event.value;
-              break;
-            case WorkoutFeature.distance:
-              distance = event.value;
-              break;
-            case WorkoutFeature.speed:
-              speed = event.value;
-              break;
-            default:
-              break;
-          }
+        // Initialize and start the timer to periodically call publishSensorData
+        _periodicUpdateTimer =
+            Timer.periodic(const Duration(minutes: 1), (Timer timer) {
+          publishSensorData();
         });
-      });
-    }
-  }).catchError((error) {
-    print('Error starting workout: $error');
-  });
-}
 
-@override
-void dispose() {
-  // Cancel the timer when the widget is disposed to prevent memory leaks
-  _periodicUpdateTimer?.cancel();
-  super.dispose();
-}
+        workout.stream.listen((event) {
+          print('Received workout update: $event');
+          setState(() {
+            switch (event.feature) {
+              case WorkoutFeature.heartRate:
+                heartRate = event.value;
+                break;
+              case WorkoutFeature.calories:
+                calories = event.value;
+                break;
+              case WorkoutFeature.steps:
+                steps = event.value;
+                break;
+              case WorkoutFeature.distance:
+                distance = event.value;
+                break;
+              case WorkoutFeature.speed:
+                speed = event.value;
+                break;
+              default:
+                break;
+            }
+          });
+        });
+      }
+    }).catchError((error) {
+      print('Error starting workout: $error');
+    });
+  }
 
+  @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed to prevent memory leaks
+    _periodicUpdateTimer?.cancel();
+    super.dispose();
+  }
 
   void publishSensorData() {
     final roundedHeartRate = heartRate.round().toString();
@@ -235,7 +237,7 @@ void dispose() {
               child: GridView.count(
                 shrinkWrap: true,
                 physics:
-                    NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
+                    const NeverScrollableScrollPhysics(), // Ensure the GridView doesn't scroll
                 crossAxisCount: 2,
                 mainAxisSpacing: spacing,
                 crossAxisSpacing: spacing,
