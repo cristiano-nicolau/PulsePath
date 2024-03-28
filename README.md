@@ -27,13 +27,13 @@ The core concept of our application revolves around a comprehensive fitness and 
     
 2. Run ```flutter run``` to start the application on your Android smartphone or WearOS device.
 
-**Note:** To have the best experience using the aplication you have to luncg phone flutter app and wearOS flutter app.
+**Note:** To have the best experience using the aplication you have to launch both the phone flutter app and wearOS flutter app.
 
 3. Run the application on an Android smartphone and WearOS device using the respective emulators or physical devices.
 
 4. Grant the necessary permissions for location, heart rate, and other sensors to enable the full functionality of the application.
 
-5. Start a workout session on the smartphone app or WearOS device to track your physical activities and monitor your health metrics in real-time.
+5. After that the WearOS app will automatically start a workout session, that can also be seen in the Smartphone app, to track your physical activities and monitor your health metrics in real-time.
 
 6. Explore the various features of the application, including heart rate monitoring, step counting, calorie tracking, distance tracking, water intake monitoring, and weather forecasting.
 
